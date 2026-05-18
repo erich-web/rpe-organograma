@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rotinas Back Office - Grupo RPE</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-black: #0F0F0F;
+      --color-dark-gray: #1A1A1A;
+      --color-space-gray: #313131;
+      --color-light-gray: #F5F4F0;
+      --color-off-white: #FFFFFF;
+      --color-green: #00B73D;
+      --color-green-light: #F0F9F5;
+
+      --font-display: 'Anton', sans-serif;
+      --font-highlight: 'Spectral', serif;
+      --font-body: 'DM Sans', sans-serif;
+
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-light-gray);
+      color: var(--color-black);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--space-5);
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, var(--color-black) 0%, var(--color-dark-gray) 100%);
+      color: var(--color-off-white);
+      padding: var(--space-10);
+      margin-bottom: var(--space-10);
+      border-bottom: 4px solid var(--color-green);
+    }
+
+    header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      margin-bottom: var(--space-3);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: 900;
+    }
+
+    header p {
+      font-family: var(--font-highlight);
+      font-size: 1.25rem;
+      opacity: 0.95;
+      font-weight: 300;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-6);
+      margin-top: var(--space-8);
+    }
+
+    .stat {
+      background: rgba(0, 183, 61, 0.1);
+      padding: var(--space-5);
+      border-left: 4px solid var(--color-green);
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 2.5em;
+      color: var(--color-green);
+      margin-bottom: var(--space-2);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    /* ===== FILTERS ===== */
+    .filters {
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-10);
+      justify-content: center;
+    }
+
+    .filter-btn {
+      padding: var(--space-4) var(--space-6);
+      border: 2px solid var(--color-black);
+      background: var(--color-off-white);
+      color: var(--color-black);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: 600;
+      transition: all var(--transition-base);
+      border-radius: 2px;
+      text-transform: uppercase;
+      font-size: 0.9em;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-btn.active {
+      background: var(--color-green);
+      color: var(--color-off-white);
+      border-color: var(--color-green);
+      box-shadow: 0 4px 12px rgba(0, 183, 61, 0.3);
+    }
+
+    .filter-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ===== EMPLOYEE GRID ===== */
+    .employees-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: var(--space-6);
+      margin-bottom: var(--space-10);
+    }
+
+    .employee-card {
+      background: var(--color-off-white);
+      overflow: hidden;
+      border: 2px solid var(--color-black);
+      transition: all var(--transition-base);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .employee-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+      border-color: var(--color-green);
+    }
+
+    /* Card Header */
+    .employee-header {
+      background: linear-gradient(135deg, var(--color-black) 0%, var(--color-dark-gray) 100%);
+      color: var(--color-off-white);
+      padding: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+      border-bottom: 3px solid var(--color-green);
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--color-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.5em;
+      color: var(--color-black);
+      flex-shrink: 0;
+      font-family: var(--font-display);
+    }
+
+    .employee-info {
+      flex: 1;
+    }
+
+    .employee-name {
+      font-family: var(--font-display);
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: var(--space-2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .employee-title {
+      font-family: var(--font-highlight);
+      font-size: 0.95em;
+      opacity: 0.95;
+      font-weight: 400;
+    }
+
+    /* Card Body */
+    .employee-body {
+      padding: var(--space-6);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .department-badge {
+      display: inline-block;
+      background: var(--color-black);
+      color: var(--color-green);
+      padding: var(--space-2) var(--space-4);
+      font-size: 0.8em;
+      margin-bottom: var(--space-4);
+      font-weight: 600;
+      border: 1px solid var(--color-green);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 2px;
+      width: fit-content;
+    }
+
+    /* Objective Section */
+    .objective-section {
+      margin-bottom: var(--space-5);
+      padding: var(--space-4);
+      background: var(--color-green-light);
+      border-left: 3px solid var(--color-green);
+      border-radius: 2px;
+    }
+
+    .objective-label {
+      font-family: var(--font-display);
+      font-size: 0.8em;
+      text-transform: uppercase;
+      color: var(--color-green);
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+      letter-spacing: 1px;
+    }
+
+    .objective-text {
+      font-size: 0.95em;
+      color: var(--color-dark-gray);
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    /* Description Section */
+    .description-section {
+      margin-bottom: var(--space-5);
+    }
+
+    .description-label {
+      font-family: var(--font-display);
+      font-size: 0.8em;
+      text-transform: uppercase;
+      color: var(--color-black);
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+      letter-spacing: 1px;
+    }
+
+    .description-text {
+      font-size: 0.9em;
+      color: var(--color-dark-gray);
+      line-height: 1.6;
+    }
+
+    /* Routines Tabs */
+    .routines-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .routines-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+      border-bottom: 2px solid var(--color-space-gray);
+    }
+
+    .routine-tab {
+      padding: var(--space-3) var(--space-2);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.8em;
+      text-transform: uppercase;
+      color: var(--color-dark-gray);
+      transition: all var(--transition-fast);
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+
+    .routine-tab.active {
+      color: var(--color-green);
+      border-bottom-color: var(--color-green);
+    }
+
+    .routine-tab:hover {
+      color: var(--color-black);
+    }
+
+    .routines-content {
+      flex: 1;
+    }
+
+    .routine-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: var(--space-3);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-light-gray);
+      font-size: 0.9em;
+      color: var(--color-dark-gray);
+      line-height: 1.5;
+    }
+
+    .routine-item:last-child {
+      border-bottom: none;
+    }
+
+    .routine-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 6px;
+      height: 6px;
+      background: var(--color-green);
+      border-radius: 50%;
+      margin-right: var(--space-3);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .routine-text {
+      word-break: break-word;
+    }
+
+    .routines-empty {
+      font-size: 0.9em;
+      color: var(--color-space-gray);
+      font-style: italic;
+      padding: var(--space-3) 0;
+    }
+
+    /* ===== LOADING & EMPTY STATES ===== */
+    .loading, .empty-state {
+      text-align: center;
+      padding: var(--space-10);
+      color: var(--color-dark-gray);
+      font-family: var(--font-body);
+      font-size: 1.1em;
+    }
+
+    .loading {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: var(--space-10);
+      border-top: 2px solid var(--color-black);
+      color: var(--color-dark-gray);
+      font-size: 0.9em;
+      background: var(--color-off-white);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      header {
+        padding: var(--space-6);
+      }
+
+      .employees-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-btn {
+        width: 100%;
+      }
+
+      .employee-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .employee-info {
+        width: 100%;
+      }
+
+      .routines-tabs {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📋 Rotinas Back Office</h1>
+      <p>Detalhamento de atividades e responsabilidades do time</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-number" id="stat-employees">-</div>
+          <div class="stat-label">Colaboradores</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number" id="stat-departments">-</div>
+          <div class="stat-label">Departamentos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number" id="stat-routines">-</div>
+          <div class="stat-label">Rotinas Mapeadas</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="filters" id="filters"></div>
+
+    <div id="content">
+      <div class="loading">Carregando dados...</div>
+    </div>
+
+    <footer>
+      <p>© 2026 Grupo RPE - Todos os direitos reservados</p>
+    </footer>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://jiagjzhldrhemxrvfvey.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Ysd3ctYx0ttiN27aUHVfwg_GsC35goJ';
+
+    const { createClient } = window.supabase;
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let allEmployees = [];
+    let allDepartments = [];
+    let currentFilter = 'all';
+
+    async function loadData() {
+      try {
+        // Load departments
+        const { data: departments } = await supabase
+          .from('departments')
+          .select('*')
+          .order('name');
+        allDepartments = departments || [];
+
+        // Load employees with expanded data
+        const { data: employees } = await supabase
+          .from('employees')
+          .select('id, name, title, department_id, description, objective, routines_daily, routines_weekly, routines_monthly, departments(name)')
+          .order('name');
+        allEmployees = employees || [];
+
+        // Calculate total routines
+        let totalRoutines = 0;
+        allEmployees.forEach(emp => {
+          totalRoutines += (emp.routines_daily?.length || 0) +
+                          (emp.routines_weekly?.length || 0) +
+                          (emp.routines_monthly?.length || 0);
+        });
+
+        // Update stats
+        document.getElementById('stat-employees').textContent = allEmployees.length;
+        document.getElementById('stat-departments').textContent = allDepartments.length;
+        document.getElementById('stat-routines').textContent = totalRoutines;
+
+        // Create filters
+        createFilters();
+
+        // Render initial view
+        renderEmployees();
+      } catch (err) {
+        console.error('Error loading data:', err);
+        document.getElementById('content').innerHTML = '<div class="empty-state">Erro ao carregar dados. Verificando conexão...</div>';
+      }
+    }
+
+    function createFilters() {
+      const filterDiv = document.getElementById('filters');
+      filterDiv.innerHTML = '';
+
+      const allBtn = document.createElement('button');
+      allBtn.className = 'filter-btn active';
+      allBtn.textContent = 'Todos os Departamentos';
+      allBtn.onclick = () => setFilter('all');
+      filterDiv.appendChild(allBtn);
+
+      allDepartments.forEach(dept => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.textContent = dept.name;
+        btn.onclick = () => setFilter(dept.id);
+        filterDiv.appendChild(btn);
+      });
+    }
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderEmployees();
+    }
+
+    function renderEmployees() {
+      const content = document.getElementById('content');
+      let filtered = allEmployees;
+
+      if (currentFilter !== 'all') {
+        filtered = allEmployees.filter(e => e.department_id === currentFilter);
+      }
+
+      if (filtered.length === 0) {
+        content.innerHTML = '<div class="empty-state">Nenhum colaborador encontrado</div>';
+        return;
+      }
+
+      content.innerHTML = '<div class="employees-grid" id="grid"></div>';
+      const grid = document.getElementById('grid');
+
+      filtered.forEach(emp => {
+        const card = createEmployeeCard(emp);
+        grid.appendChild(card);
+      });
+    }
+
+    function createEmployeeCard(emp) {
+      const card = document.createElement('div');
+      card.className = 'employee-card';
+
+      const deptName = emp.departments?.name || 'Sem departamento';
+      const initials = emp.name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+
+      const dailyRoutines = emp.routines_daily || [];
+      const weeklyRoutines = emp.routines_weekly || [];
+      const monthlyRoutines = emp.routines_monthly || [];
+
+      card.innerHTML = `
+        <div class="employee-header">
+          <div class="avatar">${initials}</div>
+          <div class="employee-info">
+            <div class="employee-name">${emp.name}</div>
+            <div class="employee-title">${emp.title}</div>
+          </div>
+        </div>
+        <div class="employee-body">
+          <div class="department-badge">${deptName}</div>
+
+          ${emp.objective ? `
+          <div class="objective-section">
+            <div class="objective-label">🎯 Objetivo</div>
+            <div class="objective-text">${emp.objective}</div>
+          </div>
+          ` : ''}
+
+          ${emp.description ? `
+          <div class="description-section">
+            <div class="description-label">📝 Descrição</div>
+            <div class="description-text">${emp.description}</div>
+          </div>
+          ` : ''}
+
+          <div class="routines-section">
+            <div class="routines-tabs">
+              <button class="routine-tab active" data-tab="daily">Diárias (${dailyRoutines.length})</button>
+              <button class="routine-tab" data-tab="weekly">Semanais (${weeklyRoutines.length})</button>
+              <button class="routine-tab" data-tab="monthly">Mensais (${monthlyRoutines.length})</button>
+            </div>
+            <div class="routines-content">
+              <div class="routine-content active" data-content="daily">
+                ${renderRoutineList(dailyRoutines)}
+              </div>
+              <div class="routine-content" data-content="weekly">
+                ${renderRoutineList(weeklyRoutines)}
+              </div>
+              <div class="routine-content" data-content="monthly">
+                ${renderRoutineList(monthlyRoutines)}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Add tab functionality
+      const tabs = card.querySelectorAll('.routine-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Update active tab
+          card.querySelectorAll('.routine-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          // Update active content
+          const tabName = tab.getAttribute('data-tab');
+          card.querySelectorAll('.routine-content').forEach(content => {
+            content.classList.remove('active');
+          });
+          card.querySelector(`[data-content="${tabName}"]`).classList.add('active');
+        });
+      });
+
+      return card;
+    }
+
+    function renderRoutineList(routines) {
+      if (!routines || routines.length === 0) {
+        return '<div class="routines-empty">Nenhuma rotina registrada</div>';
+      }
+
+      return routines
+        .map(routine => `
+          <div class="routine-item">
+            <div class="routine-dot"></div>
+            <div class="routine-text">${routine}</div>
+          </div>
+        `)
+        .join('');
+    }
+
+    // Hide active content by default (will be shown with CSS)
+    const style = document.createElement('style');
+    style.textContent = `
+      .routine-content {
+        display: none;
+      }
+      .routine-content.active {
+        display: block;
+        animation: fadeIn 200ms ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    loadData();
+  </script>
+</body>
+</html>
