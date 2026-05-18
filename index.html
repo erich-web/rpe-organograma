@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rotinas Back Office - Grupo RPE</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
@@ -53,7 +52,6 @@
       padding: var(--space-5);
     }
 
-    /* ===== HEADER ===== */
     header {
       background: linear-gradient(135deg, var(--color-black) 0%, var(--color-dark-gray) 100%);
       color: var(--color-off-white);
@@ -80,14 +78,14 @@
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: var(--space-6);
       margin-top: var(--space-8);
     }
 
     .stat {
-      background: rgba(0, 183, 61, 0.1);
-      padding: var(--space-5);
+      background: rgba(255, 255, 255, 0.1);
+      padding: var(--space-6);
       border-left: 4px solid var(--color-green);
       backdrop-filter: blur(10px);
     }
@@ -97,23 +95,20 @@
       font-size: 2.5em;
       color: var(--color-green);
       margin-bottom: var(--space-2);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .stat-label {
       font-size: 0.9em;
-      opacity: 0.95;
+      opacity: 0.9;
       text-transform: uppercase;
       letter-spacing: 1px;
-      font-weight: 600;
     }
 
-    /* ===== FILTERS ===== */
     .filters {
       display: flex;
       gap: var(--space-4);
       flex-wrap: wrap;
-      margin-bottom: var(--space-10);
+      margin-bottom: var(--space-8);
       justify-content: center;
     }
 
@@ -125,18 +120,10 @@
       cursor: pointer;
       font-family: var(--font-body);
       font-weight: 600;
-      transition: all var(--transition-base);
-      border-radius: 2px;
+      transition: var(--transition-base);
       text-transform: uppercase;
       font-size: 0.9em;
-      letter-spacing: 0.5px;
-    }
-
-    .filter-btn.active {
-      background: var(--color-green);
-      color: var(--color-off-white);
-      border-color: var(--color-green);
-      box-shadow: 0 4px 12px rgba(0, 183, 61, 0.3);
+      letter-spacing: 1px;
     }
 
     .filter-btn:hover {
@@ -144,54 +131,107 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    /* ===== EMPLOYEE GRID ===== */
+    .filter-btn.active {
+      background: var(--color-green);
+      color: var(--color-off-white);
+      border-color: var(--color-green);
+    }
+
+    .org-chart {
+      background: var(--color-off-white);
+      padding: var(--space-8);
+      margin-bottom: var(--space-8);
+      border: 2px solid var(--color-black);
+    }
+
+    .org-chart h2 {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: var(--space-8);
+      color: var(--color-black);
+    }
+
+    .org-level {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-6);
+      margin-bottom: var(--space-8);
+      flex-wrap: wrap;
+    }
+
+    .org-card {
+      background: var(--color-black);
+      color: var(--color-off-white);
+      padding: var(--space-5);
+      text-align: center;
+      min-width: 150px;
+      cursor: pointer;
+      transition: var(--transition-base);
+      border: 2px solid var(--color-green);
+    }
+
+    .org-card:hover {
+      transform: scale(1.08);
+      background: var(--color-green);
+      color: var(--color-black);
+    }
+
+    .org-card-name {
+      font-family: var(--font-display);
+      font-weight: bold;
+      font-size: 1em;
+      margin-bottom: var(--space-2);
+      text-transform: uppercase;
+    }
+
+    .org-card-title {
+      font-family: var(--font-highlight);
+      font-size: 0.9em;
+      opacity: 0.95;
+    }
+
     .employees-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: var(--space-6);
-      margin-bottom: var(--space-10);
+      margin-bottom: var(--space-8);
     }
 
     .employee-card {
       background: var(--color-off-white);
       overflow: hidden;
       border: 2px solid var(--color-black);
-      transition: all var(--transition-base);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
+      transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
     }
 
     .employee-card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
       border-color: var(--color-green);
     }
 
-    /* Card Header */
     .employee-header {
-      background: linear-gradient(135deg, var(--color-black) 0%, var(--color-dark-gray) 100%);
+      background: var(--color-black);
       color: var(--color-off-white);
       padding: var(--space-6);
       display: flex;
       align-items: center;
       gap: var(--space-5);
-      border-bottom: 3px solid var(--color-green);
     }
 
     .avatar {
-      width: 64px;
-      height: 64px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: var(--color-green);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 1.5em;
+      font-size: 1.3em;
       color: var(--color-black);
       flex-shrink: 0;
-      font-family: var(--font-display);
     }
 
     .employee-info {
@@ -201,7 +241,7 @@
     .employee-name {
       font-family: var(--font-display);
       font-weight: bold;
-      font-size: 1.1rem;
+      font-size: 1rem;
       margin-bottom: var(--space-2);
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -209,222 +249,208 @@
 
     .employee-title {
       font-family: var(--font-highlight);
-      font-size: 0.95em;
+      font-size: 0.9em;
       opacity: 0.95;
-      font-weight: 400;
     }
 
-    /* Card Body */
     .employee-body {
       padding: var(--space-6);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
     }
 
     .department-badge {
       display: inline-block;
-      background: var(--color-black);
+      background: var(--color-space-gray);
       color: var(--color-green);
       padding: var(--space-2) var(--space-4);
-      font-size: 0.8em;
-      margin-bottom: var(--space-4);
+      font-size: 0.85em;
+      margin-bottom: var(--space-5);
       font-weight: 600;
       border: 1px solid var(--color-green);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-radius: 2px;
-      width: fit-content;
     }
 
-    /* Objective Section */
     .objective-section {
-      margin-bottom: var(--space-5);
-      padding: var(--space-4);
       background: var(--color-green-light);
-      border-left: 3px solid var(--color-green);
+      border-left: 4px solid var(--color-green);
+      padding: var(--space-4);
+      margin-bottom: var(--space-5);
       border-radius: 2px;
     }
 
-    .objective-label {
+    .section-label {
       font-family: var(--font-display);
-      font-size: 0.8em;
+      font-weight: bold;
+      color: var(--color-black);
+      margin-bottom: var(--space-3);
+      font-size: 0.85em;
       text-transform: uppercase;
-      color: var(--color-green);
-      font-weight: 600;
-      margin-bottom: var(--space-2);
       letter-spacing: 1px;
     }
 
     .objective-text {
-      font-size: 0.95em;
-      color: var(--color-dark-gray);
-      line-height: 1.5;
-      font-weight: 500;
-    }
-
-    /* Description Section */
-    .description-section {
-      margin-bottom: var(--space-5);
-    }
-
-    .description-label {
-      font-family: var(--font-display);
-      font-size: 0.8em;
-      text-transform: uppercase;
       color: var(--color-black);
-      font-weight: 600;
-      margin-bottom: var(--space-2);
-      letter-spacing: 1px;
-    }
-
-    .description-text {
-      font-size: 0.9em;
-      color: var(--color-dark-gray);
+      font-size: 0.95em;
       line-height: 1.6;
     }
 
-    /* Routines Tabs */
-    .routines-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+    .description {
+      color: var(--color-dark-gray);
+      font-size: 0.95em;
+      margin-bottom: var(--space-5);
+      line-height: 1.6;
     }
 
-    .routines-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+    .tabs {
+      display: flex;
       gap: var(--space-2);
       margin-bottom: var(--space-4);
       border-bottom: 2px solid var(--color-space-gray);
     }
 
-    .routine-tab {
-      padding: var(--space-3) var(--space-2);
-      background: transparent;
+    .tab-button {
+      padding: var(--space-3) var(--space-4);
+      background: none;
       border: none;
-      border-bottom: 3px solid transparent;
       cursor: pointer;
       font-family: var(--font-body);
       font-weight: 600;
-      font-size: 0.8em;
+      font-size: 0.85em;
       text-transform: uppercase;
-      color: var(--color-dark-gray);
-      transition: all var(--transition-fast);
       letter-spacing: 0.5px;
-      text-align: center;
+      color: var(--color-dark-gray);
+      border-bottom: 2px solid transparent;
+      transition: var(--transition-fast);
+      margin-bottom: -2px;
     }
 
-    .routine-tab.active {
+    .tab-button:hover {
+      color: var(--color-black);
+    }
+
+    .tab-button.active {
       color: var(--color-green);
       border-bottom-color: var(--color-green);
     }
 
-    .routine-tab:hover {
-      color: var(--color-black);
+    .tab-content {
+      display: none;
     }
 
-    .routines-content {
-      flex: 1;
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 150ms ease-in;
     }
 
-    .routine-item {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: var(--space-3);
-      padding-bottom: var(--space-3);
-      border-bottom: 1px solid var(--color-light-gray);
-      font-size: 0.9em;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .routines {
+      list-style: none;
+      border-left: 3px solid var(--color-green);
+      padding-left: var(--space-4);
+    }
+
+    .routines li {
       color: var(--color-dark-gray);
-      line-height: 1.5;
-    }
-
-    .routine-item:last-child {
-      border-bottom: none;
-    }
-
-    .routine-dot {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 6px;
-      height: 6px;
-      background: var(--color-green);
-      border-radius: 50%;
-      margin-right: var(--space-3);
-      margin-top: 6px;
-      flex-shrink: 0;
-    }
-
-    .routine-text {
-      word-break: break-word;
-    }
-
-    .routines-empty {
       font-size: 0.9em;
-      color: var(--color-space-gray);
-      font-style: italic;
-      padding: var(--space-3) 0;
+      margin-bottom: var(--space-3);
+      line-height: 1.5;
+      position: relative;
+      padding-left: var(--space-4);
     }
 
-    /* ===== LOADING & EMPTY STATES ===== */
-    .loading, .empty-state {
+    .routines li:before {
+      content: "•";
+      color: var(--color-green);
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+
+    .routine-count {
+      display: inline-block;
+      background: var(--color-green);
+      color: var(--color-off-white);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.75em;
+      margin-left: var(--space-2);
+      font-weight: 700;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--space-8);
+      color: var(--color-dark-gray);
+    }
+
+    .loading {
       text-align: center;
       padding: var(--space-10);
       color: var(--color-dark-gray);
       font-family: var(--font-body);
-      font-size: 1.1em;
     }
 
-    .loading {
-      animation: pulse 2s infinite;
+    .loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--color-light-gray);
+      border-top: 4px solid var(--color-green);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
-    /* ===== FOOTER ===== */
     footer {
       text-align: center;
-      padding: var(--space-10);
+      padding: var(--space-8);
       border-top: 2px solid var(--color-black);
       color: var(--color-dark-gray);
       font-size: 0.9em;
-      background: var(--color-off-white);
+      margin-top: var(--space-10);
     }
 
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
       header {
         padding: var(--space-6);
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
       }
 
       .employees-grid {
         grid-template-columns: 1fr;
       }
 
+      .org-level {
+        flex-direction: column;
+        align-items: center;
+      }
+
       .filters {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
       }
 
       .filter-btn {
         width: 100%;
-      }
-
-      .employee-header {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .employee-info {
-        width: 100%;
-      }
-
-      .routines-tabs {
-        grid-template-columns: repeat(3, 1fr);
       }
     }
   </style>
@@ -452,8 +478,13 @@
 
     <div class="filters" id="filters"></div>
 
+    <div class="org-chart" id="orgChart"></div>
+
     <div id="content">
-      <div class="loading">Carregando dados...</div>
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p style="margin-top: var(--space-5);">Carregando dados...</p>
+      </div>
     </div>
 
     <footer>
@@ -461,54 +492,54 @@
     </footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://jiagjzhldrhemxrvfvey.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Ysd3ctYx0ttiN27aUHVfwg_GsC35goJ';
 
-    const { createClient } = window.supabase;
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
+    let supabase;
     let allEmployees = [];
     let allDepartments = [];
     let currentFilter = 'all';
 
+    async function initSupabase() {
+      const { createClient } = window.supabase;
+      supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+
     async function loadData() {
       try {
-        // Load departments
+        await initSupabase();
+
         const { data: departments } = await supabase
           .from('departments')
           .select('*')
           .order('name');
         allDepartments = departments || [];
 
-        // Load employees with expanded data
         const { data: employees } = await supabase
           .from('employees')
-          .select('id, name, title, department_id, description, objective, routines_daily, routines_weekly, routines_monthly, departments(name)')
+          .select('id, name, title, description, objective, department_id, level, reports_to_id, routines_daily, routines_weekly, routines_monthly, departments(name)')
           .order('name');
         allEmployees = employees || [];
 
-        // Calculate total routines
-        let totalRoutines = 0;
-        allEmployees.forEach(emp => {
-          totalRoutines += (emp.routines_daily?.length || 0) +
-                          (emp.routines_weekly?.length || 0) +
-                          (emp.routines_monthly?.length || 0);
-        });
+        const totalRoutines = allEmployees.reduce((sum, emp) => {
+          const daily = (emp.routines_daily || []).length;
+          const weekly = (emp.routines_weekly || []).length;
+          const monthly = (emp.routines_monthly || []).length;
+          return sum + daily + weekly + monthly;
+        }, 0);
 
-        // Update stats
         document.getElementById('stat-employees').textContent = allEmployees.length;
         document.getElementById('stat-departments').textContent = allDepartments.length;
         document.getElementById('stat-routines').textContent = totalRoutines;
 
-        // Create filters
         createFilters();
-
-        // Render initial view
+        renderOrgChart();
         renderEmployees();
       } catch (err) {
-        console.error('Error loading data:', err);
-        document.getElementById('content').innerHTML = '<div class="empty-state">Erro ao carregar dados. Verificando conexão...</div>';
+        console.error('Erro ao carregar dados:', err);
+        document.getElementById('content').innerHTML = '<div class="empty-state"><p>⚠️ Erro ao carregar dados. Verifique a conexão.</p></div>';
       }
     }
 
@@ -518,7 +549,7 @@
 
       const allBtn = document.createElement('button');
       allBtn.className = 'filter-btn active';
-      allBtn.textContent = 'Todos os Departamentos';
+      allBtn.textContent = 'Todos';
       allBtn.onclick = () => setFilter('all');
       filterDiv.appendChild(allBtn);
 
@@ -526,6 +557,7 @@
         const btn = document.createElement('button');
         btn.className = 'filter-btn';
         btn.textContent = dept.name;
+        btn.setAttribute('data-dept', dept.id);
         btn.onclick = () => setFilter(dept.id);
         filterDiv.appendChild(btn);
       });
@@ -534,8 +566,46 @@
     function setFilter(filter) {
       currentFilter = filter;
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+      document.querySelector(`[data-dept="${filter}"]`)?.classList.add('active') || document.querySelector('[data-dept="all"]')?.classList.add('active') || document.querySelectorAll('.filter-btn')[0].classList.add('active');
       renderEmployees();
+    }
+
+    function renderOrgChart() {
+      const chart = document.getElementById('orgChart');
+      const levels = [1, 2, 3, 4, 5, 6];
+
+      chart.innerHTML = '<h2>📊 Hierarquia Organizacional</h2>';
+
+      levels.forEach(level => {
+        const levelEmployees = allEmployees.filter(e => e.level === level);
+        if (levelEmployees.length > 0) {
+          const levelDiv = document.createElement('div');
+          levelDiv.className = 'org-level';
+
+          levelEmployees.forEach(emp => {
+            const card = document.createElement('div');
+            card.className = 'org-card';
+            card.innerHTML = `
+              <div class="org-card-name">${emp.name}</div>
+              <div class="org-card-title">${emp.title}</div>
+            `;
+            card.onclick = () => {
+              if (emp.department_id) {
+                currentFilter = emp.department_id;
+                const btn = document.querySelector(`[data-dept="${emp.department_id}"]`);
+                if (btn) {
+                  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                  btn.classList.add('active');
+                }
+              }
+              renderEmployees();
+            };
+            levelDiv.appendChild(card);
+          });
+
+          chart.appendChild(levelDiv);
+        }
+      });
     }
 
     function renderEmployees() {
@@ -547,7 +617,7 @@
       }
 
       if (filtered.length === 0) {
-        content.innerHTML = '<div class="empty-state">Nenhum colaborador encontrado</div>';
+        content.innerHTML = '<div class="empty-state">Nenhum colaborador encontrado neste departamento.</div>';
         return;
       }
 
@@ -555,124 +625,98 @@
       const grid = document.getElementById('grid');
 
       filtered.forEach(emp => {
-        const card = createEmployeeCard(emp);
+        const card = document.createElement('div');
+        card.className = 'employee-card';
+        const deptName = emp.departments?.name || 'Sem departamento';
+        const initials = emp.name
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+
+        const dailyRoutines = emp.routines_daily || [];
+        const weeklyRoutines = emp.routines_weekly || [];
+        const monthlyRoutines = emp.routines_monthly || [];
+
+        card.innerHTML = `
+          <div class="employee-header">
+            <div class="avatar">${initials}</div>
+            <div class="employee-info">
+              <div class="employee-name">${emp.name}</div>
+              <div class="employee-title">${emp.title}</div>
+            </div>
+          </div>
+          <div class="employee-body">
+            <div class="department-badge">${deptName}</div>
+
+            ${emp.objective ? `
+              <div class="objective-section">
+                <div class="section-label">🎯 Objetivo</div>
+                <div class="objective-text">${emp.objective}</div>
+              </div>
+            ` : ''}
+
+            ${emp.description ? `
+              <div style="margin-bottom: var(--space-5);">
+                <div class="section-label">📝 Descrição</div>
+                <div class="description">${emp.description}</div>
+              </div>
+            ` : ''}
+
+            <div class="tabs">
+              <button class="tab-button active" onclick="switchTab(event, '${emp.id}-daily')">
+                Diárias <span class="routine-count">${dailyRoutines.length}</span>
+              </button>
+              <button class="tab-button" onclick="switchTab(event, '${emp.id}-weekly')">
+                Semanais <span class="routine-count">${weeklyRoutines.length}</span>
+              </button>
+              <button class="tab-button" onclick="switchTab(event, '${emp.id}-monthly')">
+                Mensais <span class="routine-count">${monthlyRoutines.length}</span>
+              </button>
+            </div>
+
+            <div id="${emp.id}-daily" class="tab-content active">
+              ${dailyRoutines.length > 0 ? `
+                <ul class="routines">
+                  ${dailyRoutines.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+              ` : '<p style="color: var(--color-dark-gray); font-size: 0.9em;">Nenhuma rotina mapeada</p>'}
+            </div>
+
+            <div id="${emp.id}-weekly" class="tab-content">
+              ${weeklyRoutines.length > 0 ? `
+                <ul class="routines">
+                  ${weeklyRoutines.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+              ` : '<p style="color: var(--color-dark-gray); font-size: 0.9em;">Nenhuma rotina mapeada</p>'}
+            </div>
+
+            <div id="${emp.id}-monthly" class="tab-content">
+              ${monthlyRoutines.length > 0 ? `
+                <ul class="routines">
+                  ${monthlyRoutines.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+              ` : '<p style="color: var(--color-dark-gray); font-size: 0.9em;">Nenhuma rotina mapeada</p>'}
+            </div>
+          </div>
+        `;
         grid.appendChild(card);
       });
     }
 
-    function createEmployeeCard(emp) {
-      const card = document.createElement('div');
-      card.className = 'employee-card';
-
-      const deptName = emp.departments?.name || 'Sem departamento';
-      const initials = emp.name
-        .split(' ')
-        .map(n => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
-
-      const dailyRoutines = emp.routines_daily || [];
-      const weeklyRoutines = emp.routines_weekly || [];
-      const monthlyRoutines = emp.routines_monthly || [];
-
-      card.innerHTML = `
-        <div class="employee-header">
-          <div class="avatar">${initials}</div>
-          <div class="employee-info">
-            <div class="employee-name">${emp.name}</div>
-            <div class="employee-title">${emp.title}</div>
-          </div>
-        </div>
-        <div class="employee-body">
-          <div class="department-badge">${deptName}</div>
-
-          ${emp.objective ? `
-          <div class="objective-section">
-            <div class="objective-label">🎯 Objetivo</div>
-            <div class="objective-text">${emp.objective}</div>
-          </div>
-          ` : ''}
-
-          ${emp.description ? `
-          <div class="description-section">
-            <div class="description-label">📝 Descrição</div>
-            <div class="description-text">${emp.description}</div>
-          </div>
-          ` : ''}
-
-          <div class="routines-section">
-            <div class="routines-tabs">
-              <button class="routine-tab active" data-tab="daily">Diárias (${dailyRoutines.length})</button>
-              <button class="routine-tab" data-tab="weekly">Semanais (${weeklyRoutines.length})</button>
-              <button class="routine-tab" data-tab="monthly">Mensais (${monthlyRoutines.length})</button>
-            </div>
-            <div class="routines-content">
-              <div class="routine-content active" data-content="daily">
-                ${renderRoutineList(dailyRoutines)}
-              </div>
-              <div class="routine-content" data-content="weekly">
-                ${renderRoutineList(weeklyRoutines)}
-              </div>
-              <div class="routine-content" data-content="monthly">
-                ${renderRoutineList(monthlyRoutines)}
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Add tab functionality
-      const tabs = card.querySelectorAll('.routine-tab');
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          // Update active tab
-          card.querySelectorAll('.routine-tab').forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-
-          // Update active content
-          const tabName = tab.getAttribute('data-tab');
-          card.querySelectorAll('.routine-content').forEach(content => {
-            content.classList.remove('active');
-          });
-          card.querySelector(`[data-content="${tabName}"]`).classList.add('active');
-        });
+    function switchTab(event, tabId) {
+      const empId = tabId.split('-')[0];
+      document.querySelectorAll(`#${empId}-daily, #${empId}-weekly, #${empId}-monthly`).forEach(el => {
+        el.classList.remove('active');
       });
+      document.getElementById(tabId).classList.add('active');
 
-      return card;
+      event.target.closest('.tabs').querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
     }
-
-    function renderRoutineList(routines) {
-      if (!routines || routines.length === 0) {
-        return '<div class="routines-empty">Nenhuma rotina registrada</div>';
-      }
-
-      return routines
-        .map(routine => `
-          <div class="routine-item">
-            <div class="routine-dot"></div>
-            <div class="routine-text">${routine}</div>
-          </div>
-        `)
-        .join('');
-    }
-
-    // Hide active content by default (will be shown with CSS)
-    const style = document.createElement('style');
-    style.textContent = `
-      .routine-content {
-        display: none;
-      }
-      .routine-content.active {
-        display: block;
-        animation: fadeIn 200ms ease-in-out;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-    `;
-    document.head.appendChild(style);
 
     loadData();
   </script>
